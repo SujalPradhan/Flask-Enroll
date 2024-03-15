@@ -54,7 +54,7 @@ This is a Flask-based web application for managing students, courses, and their 
 - CSS
 ## Contributors
 
-- [Your Name](https://github.com/SujalPradhan)
+- [SUJAL RAJ PRADHAN](https://github.com/SujalPradhan)
 
 
 Make sure to replace `<repository_url>`, `Your Name`, `Contributor's Name`, and `your_username`/`contributor_username` with appropriate values. You can also add more sections or details as needed for your specific project.
