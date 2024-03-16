@@ -1,5 +1,9 @@
 from flask import Flask, redirect, render_template, request
 from model import *
+import matplotlib.pyplot as plt
+import io
+import base64
+
 
 app=Flask(__name__)
 
@@ -181,6 +185,45 @@ def course_delete(course_id):
     db.session.commit()
     return redirect('/')
 
+# Function to generate pie chart for number of subjects taken by students
+def generate_subjects_pie_chart():
+    # Collect data - Example: Get the count of subjects taken by each student
+    subjects_counts = db.session.query(Student, db.func.count(Enrollments.ecourse_id)).join(Enrollments).group_by(Student.student_id).all()
+    
+    # Process data to calculate distribution
+    subjects_distribution = {}
+    for student, count in subjects_counts:
+        if count not in subjects_distribution:
+            subjects_distribution[count] = 1
+        else:
+            subjects_distribution[count] += 1
+    
+    # Create labels and sizes for pie chart
+    labels = [f"{count} subjects" for count in subjects_distribution.keys()]
+    sizes = list(subjects_distribution.values())
+    
+    # Create pie chart
+    plt.figure(figsize=(8, 8))
+    plt.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=140)
+    plt.title('Distribution of Students by Number of Subjects')
+    plt.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle
+    
+    # Save plot to buffer
+    buffer = io.BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+    plt.close()
+    
+    # Encode plot as base64 string
+    plot_data = base64.b64encode(buffer.read()).decode('utf-8')
+    return plot_data
+
+@app.route('/dashboard')
+def dashboard():
+    # Generate pie chart for number of subjects taken by students
+    subjects_pie_chart = generate_subjects_pie_chart()
+    
+    return render_template('dashboard.html', subjects_pie_chart=subjects_pie_chart)
 
 if __name__=='__main__':
     app.run()
