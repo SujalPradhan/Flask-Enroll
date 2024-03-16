@@ -47,6 +47,7 @@ This is a Flask-based web application for managing students, courses, and their 
 ## Technologies Used
 
 - Flask
+- Matplotlib
 - SQLAlchemy
 - SQLite
 - Python
